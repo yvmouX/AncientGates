@@ -79,12 +79,12 @@ public class TeleportUtil {
 		if (player.isInsideVehicle() && entity instanceof LivingEntity) {
 			entity.eject();
 			if (teleportEntities && !(entity instanceof Player)) {
-				entity.teleport(location);
+				entity.teleportAsync(location);
 				entity.setFireTicks(0);
 				ScheduleUtils.runPlatformTaskLater(() -> entity.setPassenger(player), entity, 2);
 			}
 		} else {
-			player.teleport(location);
+			player.teleportAsync(location);
 			player.setFireTicks(0); // Cancel lava fire
 		}
 
@@ -123,9 +123,9 @@ public class TeleportUtil {
 				}
 				position.setYaw(yaw);
 				if (e != null) {
-					e.teleport(position);
+					e.teleportAsync(position);
 				}
-				player.teleport(position);
+				player.teleportAsync(position);
 			}
 			if (e != null) {
 				e.setFireTicks(0); // Cancel lava fire
@@ -182,7 +182,7 @@ public class TeleportUtil {
 		final Entity entity = event.getEntity();
 
 		if (entity.getType().isSpawnable()) {
-			entity.teleport(location);
+			entity.teleportAsync(location);
 		} else if (EntityUtil.isDroppedItem(entity.getType())) {
 			entity.remove();
 			location.getWorld().dropItemNaturally(location, ((Item) entity).getItemStack());
@@ -271,11 +271,11 @@ public class TeleportUtil {
 			if (queue.getEntityType().isSpawnable()) {
 				final Entity entity = world.spawnEntity(destination, queue.getEntityType()); // Entity
 				EntityUtil.setEntityTypeData(entity, queue.getEntityTypeData());
-				entity.teleport(destination);
+				entity.teleportAsync(destination);
 			} else if (EntityUtil.isDroppedItem(queue.getEntityType())) {
 				final Item item = world.dropItemNaturally(destination, ItemStackUtil.stringToItemStack(queue.getEntityTypeData())[0]); // Dropped
 				// ItemStack
-				item.teleport(destination);
+				item.teleportAsync(destination);
 			}
 
 			// Remove from queue
@@ -318,7 +318,7 @@ public class TeleportUtil {
 			vehicle.eject();
 			vehicle.remove();
 			ScheduleUtils.runPlatformTask(() -> {
-				passenger.teleport(destination);
+				passenger.teleportAsync(destination);
 				passenger.setFireTicks(0); // Cancel lava fire
 			}, passenger);
 			ScheduleUtils.runPlatformTaskLater(() -> {
@@ -399,7 +399,7 @@ public class TeleportUtil {
 						yaw -= 360;
 					}
 					position.setYaw(yaw);
-					player.teleport(position);
+					player.teleportAsync(position);
 				}
 				player.setFireTicks(0); // Cancel lava fire
 
@@ -600,7 +600,7 @@ public class TeleportUtil {
 		newVelocity.multiply(velocity);
 
 		final Vehicle v = (Vehicle) location.getWorld().spawnEntity(location, EntityUtil.entityType(vehicleTypeName));
-		player.teleport(location);
+		player.teleportAsync(location);
 		ScheduleUtils.runPlatformTaskLater(() -> {
 			v.setPassenger(player);
 			v.setVelocity(newVelocity);
